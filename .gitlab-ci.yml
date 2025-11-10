@@ -1,0 +1,68 @@
+image: docker:stable
+
+#apenas para não executar na main porque estamos subindo no laravel cloud por enquanto
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "xyz"
+      when: always
+
+cache:
+  key: $CI_COMMIT_REF_SLUG-$CI_PROJECT_DIR
+  paths:
+    - vendor/
+    
+stages:
+  - composer-install
+  - docker-build
+  - deploy
+
+variables: 
+  IMAGE: registry.gitlab.com/equipe-de-projetos/social-media-backend:$CI_COMMIT_SHORT_SHA
+  BASE_IMAGE: webdevops/php-apache:8.2-alpine
+  RUNNER_TAG: social-media-backend  
+  REGISTRY: registry.gitlab.com
+  APPNAME: social-backend
+
+
+composer-install:   
+  stage: composer-install
+  tags:
+    - $RUNNER_TAG   
+  image: 
+    name: $BASE_IMAGE
+    entrypoint: [""]    
+  script:
+    - composer install --optimize-autoloader --no-dev    
+
+docker-build:
+  stage: docker-build
+  environment: $CI_COMMIT_BRANCH
+  tags:
+    - $RUNNER_TAG
+  image: docker:stable    
+  script:        
+    - cp .env.example .env   
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build . --build-arg BASE_IMAGE=$BASE_IMAGE -t $IMAGE
+    - docker push $IMAGE
+    - echo "execute deploy local usando a imagem docker run -d -p 8080:80 --name $APPNAME $IMAGE"    
+
+deploy:   
+  stage: deploy
+  environment: $CI_COMMIT_BRANCH  
+  tags:
+    - $RUNNER_TAG  
+  image: docker:stable
+  cache: []
+  # before_script:
+  #   - apk add --no-cache docker-compose   # instala no Alpine (imagem docker:stable é baseada em Alpine)
+  script:
+    - sed -i "s|CHANGEIMAGE|$IMAGE|g" docker-compose.yml
+    # POR ENQUANTO NÃO VAMOS SUBIR PARA O REGISTRY MAS APENAS EXECUTAR A IMAGEM
+    #- echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $REGISTRY     
+    - docker run -d -p 80:80 --name $APPNAME --network skynet $IMAGE
+    - docker exec $APPNAME php artisan migrate --force --seed
+    - docker exec $APPNAME php artisan optimize
+    - docker exec $APPNAME php artisan storage:link
+    - echo "🚀 Acesse a aplicação 🚀"
+   

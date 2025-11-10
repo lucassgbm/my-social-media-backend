@@ -1,0 +1,177 @@
+type: collection.insomnia.rest/5.0
+name: Meu desafio
+meta:
+  id: wrk_7908bc904cb74bf1a4ba672c5b50d482
+  created: 1744075750873
+  modified: 1744075750873
+collection:
+  - url: http://localhost:8099/api/conta
+    name: Criar Conta
+    meta:
+      id: req_1da19fe15f3b4f37863a42f3850739bc
+      created: 1744075761530
+      modified: 1744165756269
+      isPrivate: false
+      sortKey: -1744075761530
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"numero_conta": 42,
+        	"user_id": 1,
+        	"saldo": 1000
+        	
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_0b720d263b7a40ce830232ce0c4ad5e8
+      - id: pair_ed5432d68f1941f5b184ae3de1ada49a
+        name: Accept
+        value: application/json
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8099/api/conta/
+    name: Visualizar Conta
+    meta:
+      id: req_1e83e29dc7874a07a0e7015f5c45e099
+      created: 1744077628213
+      modified: 1744163030105
+      isPrivate: false
+      sortKey: -1726581050600
+    method: GET
+    body:
+      mimeType: application/json
+    parameters:
+      - id: pair_d534983d9330455cad0f5293614774fb
+        name: numero_conta
+        value: "3"
+        disabled: false
+      - id: pair_b8aff382706845bf93481eb474cb0fd2
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_0b720d263b7a40ce830232ce0c4ad5e8
+      - id: pair_ed5432d68f1941f5b184ae3de1ada49a
+        name: Accept
+        value: application/json
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8099/api/transacao
+    name: Criar Transacao
+    meta:
+      id: req_15e5ffcd476740d09f6be75afd82ae91
+      created: 1744078581629
+      modified: 1744166503256
+      isPrivate: false
+      sortKey: -1735328406065
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"numero_conta": 3,
+        	"forma_pagamento": "P",
+        	"valor": 90
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_0b720d263b7a40ce830232ce0c4ad5e8
+      - id: pair_ed5432d68f1941f5b184ae3de1ada49a
+        name: Accept
+        value: application/json
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8099/api/transacao/
+    name: Visualizar Extrato
+    meta:
+      id: req_6388c13bcc1043f89459599b3a8827e3
+      created: 1744163079343
+      modified: 1744166395673
+      isPrivate: false
+      sortKey: -1717833695135
+    method: GET
+    body:
+      mimeType: application/json
+    parameters:
+      - id: pair_d534983d9330455cad0f5293614774fb
+        name: numero_conta
+        value: "3"
+        disabled: false
+      - id: pair_b8aff382706845bf93481eb474cb0fd2
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_0b720d263b7a40ce830232ce0c4ad5e8
+      - id: pair_ed5432d68f1941f5b184ae3de1ada49a
+        name: Accept
+        value: application/json
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_8cd691b6fbe2c8f8ded49ec6b7d130e50cfc12a0
+    created: 1744075750880
+    modified: 1744076083899
+  cookies:
+    - key: XSRF-TOKEN
+      value: eyJpdiI6Ik01a0lQbFMxK2JFUzJPdC9aQnoyUkE9PSIsInZhbHVlIjoiMERTc25UemI3QzRPOXYzUTJSLzlpbnFKVkJrT2t4aHUwazVlNWlQdi9vT3B0N3k3dEwzbTk5dzgzYTJDMmxNL3RpdG5qWGM2QnpZMEx5L1d6Y2hKRlI3K0FlOEhYOVlFcWRoTStnQlVUblhZcVZ4MGhGZ1RyTlNsSkdpbmRHVUgiLCJtYWMiOiI2YWMyYzE5YThiNDZjNGMxMzZmYTAxYzcyMTE0YjE2MGJlZmIxOTRlZmVhNjdlYWM2Yjc2YjE1M2YxMzA2ZTgyIiwidGFnIjoiIn0%3D
+      maxAge: 7200
+      domain: localhost
+      path: /
+      hostOnly: true
+      creation: 2025-04-08T01:32:42.136Z
+      lastAccessed: 2025-04-08T01:34:43.897Z
+      sameSite: lax
+      id: 0377e7f0-00cc-430e-8159-0780707302b2
+    - key: laravel_session
+      value: eyJpdiI6IkxsTEFzUTkxb1g4VnNMTkR4WExSL2c9PSIsInZhbHVlIjoidGt4OEJYcFhTUHdVcmdkNnJmRnUrMUlPM3g1MU1XSUJHdjZpUzMxYVlyY0RyNTNoQSsxUkppZlMwZ0NJelpzZUdhRHd0L0RCbStpUzM1Z0ZSUnZFbkp3UXJ4eVIwcUtVd0pWOXQ0TDFHKzcxZk81d2xrOGlmb1p2NzR0dXo2Wk0iLCJtYWMiOiJjYzliYzhiMjM2NTU2MjQ4MDQxNDk1YjExODU1NjliOTVkZmZjMzc1YmQzMjUxNDE3MjRkMjBlMWQ4YzExMGZkIiwidGFnIjoiIn0%3D
+      maxAge: 7200
+      domain: localhost
+      path: /
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-04-08T01:32:42.138Z
+      lastAccessed: 2025-04-08T01:34:43.898Z
+      sameSite: lax
+      id: 76b06498-4641-4c91-86ee-413fb020a9b3
+environments:
+  name: Base Environment
+  meta:
+    id: env_8cd691b6fbe2c8f8ded49ec6b7d130e50cfc12a0
+    created: 1744075750877
+    modified: 1744075750877
+    isPrivate: false
