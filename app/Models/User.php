@@ -54,4 +54,26 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserPhoto::class, 'user_id', 'id');
     }
+
+    public function friends()
+    {
+
+        return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id')
+               ->withPivot('accepted')
+               ->wherePivot('accepted', 1);
+    }
+
+    // solicitações que recebi
+    public function friendRequests()
+    {
+        return $this->belongsToMany(User::class, 'user_friends', 'friend_id', 'user_id')
+            ->wherePivot('accepted', 0);
+    }
+
+    // solicitações que enviei
+    public function pendingRequests()
+    {
+        return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id')
+            ->wherePivot('accepted', 0);
+    }
 }
