@@ -20,6 +20,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
+            $table->string('uuid')->unique();
 
             $table->text('description');
             $table->string('photo_path')->nullable();

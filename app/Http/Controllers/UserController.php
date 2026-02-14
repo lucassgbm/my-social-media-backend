@@ -28,25 +28,26 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        $user  = new UserResource($user);
-
         $token = $user->createToken('auth_token')->plainTextToken;
 
         // Criar cookie HttpOnly com 1 hora de expiração
-        // $cookie = cookie(
-        //     'auth_token',      // nome do cookie
-        //     $token,            // valor
-        //     60*5,                // duração em minutos
-        //     null,
-        //     null,
-        //     false,              // Secure (somente https)
-        //     true,              // HttpOnly,
-        //     false,
-        //     'None'
-        // );
+        $cookie = cookie(
+            'auth_token',       // nome do cookie
+            $token,             // valor
+            60*5,               // duração em minutos
+            null,
+            null,
+            false,              // Secure (somente https)
+            true,               // HttpOnly,
+            false
+        );
 
-        return response()->json(['message' => 'Login efetuado com sucesso', 'token' => $token, 'user' => $user], 200);
-        //->withCookie($cookie);
+        return response()
+            ->json(
+                [
+                    'message' => 'Login efetuado com sucesso'
+                ], 200)
+            ->withCookie($cookie);
 
     }
 

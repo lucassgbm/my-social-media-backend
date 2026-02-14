@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    use HasUuids;
 
     protected $table = 'posts';
 
@@ -14,6 +16,11 @@ class Post extends Model
         'description',
         'photo_path'
     ];
+
+    public function uniqueIds(): array
+    {
+        return ['uuid'];
+    }
 
     public function user()
     {

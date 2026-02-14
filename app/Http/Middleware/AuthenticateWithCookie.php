@@ -18,23 +18,23 @@ class AuthenticateWithCookie
     public function handle(Request $request, Closure $next): Response
     {
 
-        $header = $request->header('Authorization');
+         $token = $request->cookie('auth_token');
 
-        if (!$header || !str_starts_with($header, 'Bearer ')) {
-            return response()->json(['message' => 'Token não fornecido.'], 401);
+        if (!$token) {
+            return response()->json(['message' => 'Não autenticado'], 401);
         }
-
-        $token = substr($header, 7);
 
         $accessToken = PersonalAccessToken::findToken($token);
 
         if (!$accessToken) {
-            return response()->json(['message' => 'Token inválido.'], 401);
+            return response()->json(['message' => 'Token inválido ou expirado'], 401);
         }
 
         $user = $accessToken->tokenable;
 
         Auth::login($user);
+
+        $request->setUserResolver(fn() => $user);
 
         return $next($request);
     }
