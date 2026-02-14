@@ -13,7 +13,21 @@ return new class extends Migration
     {
         Schema::create('user_friends', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('friend_id');
+            $table->tinyInteger('accepted')->nullable();
+            $table->datetime('accepted_at')->nullable();
+
+            $table->unique(['user_id', 'friend_id']);
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users');
+
+            $table->foreign('friend_id')
+                ->references('id')
+                ->on('users');
+
         });
     }
 

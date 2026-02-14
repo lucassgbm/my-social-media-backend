@@ -11,79 +11,107 @@ class UserFriendController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function listFriends(Request $request)
     {
-        //
+        return response()->json(
+            [
+                "data" => $request->user()->friends
+            ], 200);
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function listFriendRequests(Request $request)
     {
-        //
+        return response()->json(
+            [
+                "data" => $request->user()->friendRequests
+            ],
+            200
+        );
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function listPending(Request $request)
     {
-        DB::beginTransaction();
 
+        return response()->json(
+            [
+                "data" => $request->user()->pendingRequests
+            ],
+            200
+        );
+    }
+
+    public function sendFriendRequest(Request $request)
+    {
+        $request->validate([
+            'friend_id' => 'required|exists:users,id',
+        ]);
+
+        $friendId = $request->friend_id;
+
+        if ($friendId == $request->user()->id) {
+            return ['error' => 'Você não pode adicionar a si mesmo.'];
+        }
+
+        $exists = UserFriend::where('user_id', $request->user()->id)
+            ->where('friend_id', $friendId)
+            ->exists();
+
+        if ($exists) {
+            return ['error' => 'Solicitação já enviada ou já são amigos.'];
+        }
+
+        return UserFriend::create([
+            'user_id' => $request->user()->id,
+            'friend_id' => $friendId,
+            'accepted' => 0,
+        ]);
+    }
+
+    public function acceptFriendRequest(Request $request)
+    {
         try {
 
-            $data = $request->all();
+            DB::beginTransaction();
 
-            $friend = UserFriend::create([
-                "user_id" => $request->user()->id
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
             ]);
 
-            DB::commit();
+            $userId = $request->user_id;
 
-            return response()->json([
-                "data" => $friend
-            ], 201);
+            $friendRequest = UserFriend::where('user_id', $userId)
+            ->where('friend_id', auth()->user()->id)
+            ->firstOrFail();
+
+            // Atualiza o registro existente
+            $friendRequest->update([
+                'accepted' => 1,
+                'accepted_at' => now(),
+            ]);
+
+            // Cria o registro inverso
+            UserFriend::firstOrCreate([
+                'user_id' => auth()->user()->id,
+                'friend_id' => $userId,
+            ], [
+                'accepted' => 1,
+                'accepted_at' => now(),
+            ]);
+
+            return response()->json(
+                ["message" => "Amizade aceita"]
+            );
 
         } catch (\Exception $e) {
-
-            DB::rollback();
-
-            return response()->json([
-                "message" => "Erro ao adicionar amigo: ".$e->getMessage()
-            ], 403);
+            return response()->json(
+                [
+                    "message" => "Erro ao aceitar amizade: " . $e->getMessage()
+                ],
+                500
+            );
         }
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(UserPhoto $userPhoto)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(UserPhoto $userPhoto)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, UserPhoto $userPhoto)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(UserPhoto $userPhoto)
-    {
-        //
     }
 }

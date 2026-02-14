@@ -35,6 +35,7 @@ class UserResource extends JsonResource
                     now()->addMinutes(10) // URL válida por 10 minutos
                 )
                 : null,
+            'friends'           => $this->friends
         ];
     }
 }
