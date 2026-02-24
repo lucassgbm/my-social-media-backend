@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommunityResource;
 use App\Models\Community;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,9 +14,7 @@ class CommunityController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            "data" => Community::paginate(6)
-        ], 200);
+        return CommunityResource::collection(Community::all());
     }
 
     /**
@@ -46,7 +45,7 @@ class CommunityController extends Controller
             $data = $request->all();
 
             if($data['photo']){
-                $data['photo'] = $request->file('photo')->store('community', 'public');
+                $data['photo'] = $request->file('photo')->store('community', 'r2');
             }
 
             $community = Community::create([
@@ -59,9 +58,7 @@ class CommunityController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                "data" => $community
-            ], 201);
+           return new CommunityResource($community);
 
         } catch (\Exception $e) {
 
