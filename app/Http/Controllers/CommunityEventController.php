@@ -70,9 +70,17 @@ class CommunityEventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CommunityEvent $communityEvent)
+    public function show()
     {
-        return response()->json(["data" => $communityEvent], 200);
+        try {
+            $communityEvent = CommunityEvent::first();
+
+            return response()->json(["data" => $communityEvent ?? []], 200);
+
+        } catch (\Exception $e) {
+
+            return response()->json(["data" => $e->getMessage()], 404);
+        }
     }
 
     /**

@@ -59,7 +59,7 @@ Route::middleware('cookie_auth')->prefix('social-media')->group(function () {
 
         Route::post('/', [CommunityEventController::class, 'store']);
         Route::get('/', [CommunityEventController::class, 'index']);
-        Route::get('/{communityEvent}', [CommunityEventController::class, 'show']);
+        Route::get('/random-event', [CommunityEventController::class, 'show']);
     });
 });
 
